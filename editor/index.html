@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adventure Creator — Editor</title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <h1>Adventure Creator</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-section="impostazioni">⚙ Impostazioni</button>
+        <button class="nav-btn" data-section="stanze">🏠 Stanze</button>
+        <button class="nav-btn" data-section="oggetti">🎒 Oggetti</button>
+        <button class="nav-btn" data-section="personaggi">👤 Personaggi</button>
+        <button class="nav-btn" data-section="azioni">⚡ Azioni globali</button>
+        <button class="nav-btn" data-section="flags">🚩 Flags</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="btn-import-json" class="btn-secondary">📂 Importa JSON</button>
+        <button id="btn-export-json" class="btn-secondary">💾 Salva JSON</button>
+        <button id="btn-export-game" class="btn-primary">🎮 Esporta gioco</button>
+        <input type="file" id="file-import" accept=".json,.adventure.json" style="display:none">
+      </div>
+    </aside>
+
+    <main id="main-panel">
+      <!-- sezione impostazioni -->
+      <section id="section-impostazioni" class="section active">
+        <h2>Impostazioni avventura</h2>
+        <div class="form-grid">
+          <label>Titolo
+            <input type="text" id="meta-titolo" placeholder="Il mio gioco">
+          </label>
+          <label>Autore
+            <input type="text" id="meta-autore" placeholder="Nome autore">
+          </label>
+          <label>Stanza iniziale
+            <select id="meta-stanza-iniziale"><option value="">— seleziona stanza —</option></select>
+          </label>
+          <label class="full-width">Testo introduttivo
+            <textarea id="meta-intro" rows="4" placeholder="Testo mostrato allo studente prima di iniziare..."></textarea>
+          </label>
+          <label class="full-width">Testo vittoria
+            <textarea id="meta-vittoria" rows="3" placeholder="Hai vinto!"></textarea>
+          </label>
+          <label class="full-width">Testo sconfitta
+            <textarea id="meta-sconfitta" rows="3" placeholder="Hai perso..."></textarea>
+          </label>
+        </div>
+      </section>
+
+      <!-- sezione stanze -->
+      <section id="section-stanze" class="section">
+        <div class="section-header">
+          <h2>Stanze</h2>
+          <button id="btn-nuova-stanza" class="btn-primary">+ Nuova stanza</button>
+        </div>
+        <div id="stanze-container" class="cards-grid"></div>
+      </section>
+
+      <!-- sezione oggetti -->
+      <section id="section-oggetti" class="section">
+        <div class="section-header">
+          <h2>Oggetti</h2>
+          <button id="btn-nuovo-oggetto" class="btn-primary">+ Nuovo oggetto</button>
+        </div>
+        <div id="oggetti-container" class="cards-grid"></div>
+      </section>
+
+      <!-- sezione personaggi -->
+      <section id="section-personaggi" class="section">
+        <div class="section-header">
+          <h2>Personaggi</h2>
+          <button id="btn-nuovo-personaggio" class="btn-primary">+ Nuovo personaggio</button>
+        </div>
+        <div id="personaggi-container" class="cards-grid"></div>
+      </section>
+
+      <!-- sezione azioni globali -->
+      <section id="section-azioni" class="section">
+        <div class="section-header">
+          <h2>Azioni globali</h2>
+          <p class="section-desc">Queste azioni sono valide in qualsiasi stanza.</p>
+          <button id="btn-nuova-azione-globale" class="btn-primary">+ Nuova azione</button>
+        </div>
+        <div id="azioni-container" class="actions-list"></div>
+      </section>
+
+      <!-- sezione flags -->
+      <section id="section-flags" class="section">
+        <div class="section-header">
+          <h2>Flags</h2>
+          <p class="section-desc">Variabili booleane o numeriche usate nelle condizioni.</p>
+          <button id="btn-nuovo-flag" class="btn-primary">+ Nuovo flag</button>
+        </div>
+        <div id="flags-container" class="flags-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modale stanza -->
+  <div id="modal-stanza" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3 id="modal-stanza-title">Stanza</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <label>ID (univoco)
+            <input type="text" id="stanza-id" placeholder="es. ingresso">
+          </label>
+          <label>Nome
+            <input type="text" id="stanza-nome" placeholder="es. Ingresso del castello">
+          </label>
+          <label class="full-width">Descrizione (prima visita)
+            <textarea id="stanza-descrizione" rows="4"></textarea>
+          </label>
+          <label class="full-width">Descrizione ritorno (visite successive)
+            <textarea id="stanza-descrizione-ritorno" rows="3" placeholder="Opzionale"></textarea>
+          </label>
+        </div>
+        <h4>Uscite</h4>
+        <div class="uscite-grid">
+          <label>Nord<select id="uscita-nord"><option value="">— nessuna —</option></select></label>
+          <label>Sud<select id="uscita-sud"><option value="">— nessuna —</option></select></label>
+          <label>Est<select id="uscita-est"><option value="">— nessuna —</option></select></label>
+          <label>Ovest<select id="uscita-ovest"><option value="">— nessuna —</option></select></label>
+        </div>
+        <h4>Oggetti presenti <button class="btn-small" id="btn-add-oggetto-stanza">+</button></h4>
+        <div id="stanza-oggetti-list" class="tag-list"></div>
+        <h4>Personaggi presenti <button class="btn-small" id="btn-add-personaggio-stanza">+</button></h4>
+        <div id="stanza-personaggi-list" class="tag-list"></div>
+        <h4>Azioni locali <button class="btn-small" id="btn-add-azione-stanza">+</button></h4>
+        <div id="stanza-azioni-list" class="actions-list-small"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-elimina-stanza" class="btn-danger">Elimina</button>
+        <button id="btn-salva-stanza" class="btn-primary">Salva stanza</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale oggetto -->
+  <div id="modal-oggetto" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-oggetto-title">Oggetto</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <label>ID (univoco)
+            <input type="text" id="oggetto-id" placeholder="es. chiave">
+          </label>
+          <label>Nome
+            <input type="text" id="oggetto-nome" placeholder="es. Chiave arrugginita">
+          </label>
+          <label class="full-width">Sinonimi (separati da virgola)
+            <input type="text" id="oggetto-sinonimi" placeholder="es. chiave, chiavetta">
+          </label>
+          <label class="full-width">Descrizione
+            <textarea id="oggetto-descrizione" rows="3"></textarea>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="oggetto-raccoglibile">
+            Raccoglibile dallo studente
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="oggetto-visibile" checked>
+            Visibile nella stanza
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-elimina-oggetto" class="btn-danger">Elimina</button>
+        <button id="btn-salva-oggetto" class="btn-primary">Salva oggetto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale personaggio -->
+  <div id="modal-personaggio" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-personaggio-title">Personaggio</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <label>ID (univoco)
+            <input type="text" id="personaggio-id" placeholder="es. mercante">
+          </label>
+          <label>Nome
+            <input type="text" id="personaggio-nome" placeholder="es. Il vecchio mercante">
+          </label>
+          <label class="full-width">Sinonimi (separati da virgola)
+            <input type="text" id="personaggio-sinonimi" placeholder="es. mercante, vecchio">
+          </label>
+          <label class="full-width">Descrizione
+            <textarea id="personaggio-descrizione" rows="3"></textarea>
+          </label>
+          <label class="full-width">Dialogo default (PARLA CON)
+            <textarea id="personaggio-dialogo" rows="3"></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-elimina-personaggio" class="btn-danger">Elimina</button>
+        <button id="btn-salva-personaggio" class="btn-primary">Salva personaggio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale azione -->
+  <div id="modal-azione" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>Configura azione</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <h4>Comando</h4>
+        <div class="form-grid">
+          <label>Verbo
+            <select id="azione-verbo">
+              <option value="PRENDI">PRENDI</option>
+              <option value="APRI">APRI</option>
+              <option value="CHIUDI">CHIUDI</option>
+              <option value="PARLA">PARLA</option>
+              <option value="ESAMINA">ESAMINA</option>
+              <option value="USA">USA</option>
+              <option value="DAI">DAI</option>
+              <option value="SPINGI">SPINGI</option>
+              <option value="TIRA">TIRA</option>
+              <option value="RISPONDI">RISPONDI</option>
+              <option value="LEGGI">LEGGI</option>
+              <option value="INSERISCI">INSERISCI</option>
+              <option value="INDOSSA">INDOSSA</option>
+              <option value="RIMUOVI">RIMUOVI</option>
+              <option value="ATTIVA">ATTIVA</option>
+              <option value="DISATTIVA">DISATTIVA</option>
+            </select>
+          </label>
+          <label>Target
+            <input type="text" id="azione-target" placeholder="es. chiave">
+          </label>
+          <label class="full-width">Sinonimi target (separati da virgola)
+            <input type="text" id="azione-sinonimi" placeholder="es. chiave, chiavetta, lucchetto">
+          </label>
+          <label>Priorità
+            <input type="number" id="azione-priorita" value="0" min="0" max="100">
+          </label>
+        </div>
+
+        <h4>Condizioni <button class="btn-small" id="btn-add-condizione">+</button></h4>
+        <div id="condizioni-list"></div>
+
+        <h4>Effetti <button class="btn-small" id="btn-add-effetto">+</button></h4>
+        <div id="effetti-list"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-elimina-azione" class="btn-danger">Elimina</button>
+        <button id="btn-salva-azione" class="btn-primary">Salva azione</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale selezione oggetti/personaggi per stanza -->
+  <div id="modal-seleziona" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-small">
+      <div class="modal-header">
+        <h3 id="modal-seleziona-title">Seleziona</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="seleziona-lista" class="select-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="editor.js"></script>
+</body>
+</html>
