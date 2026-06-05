@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adventure Creator — Editor</title>
   <link rel="stylesheet" href="editor.css">
-  <!-- PDF.js per estrazione testo da PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
   <div id="app">
@@ -23,7 +21,6 @@
         <button class="nav-btn" data-section="flags">🚩 Flags</button>
       </nav>
       <div class="sidebar-footer">
-        <button id="btn-genera-ai" class="btn-ai">✨ Genera con AI</button>
         <button id="btn-import-json" class="btn-secondary">📂 Importa JSON</button>
         <button id="btn-export-json" class="btn-secondary">💾 Salva JSON</button>
         <button id="btn-export-game" class="btn-primary">🎮 Esporta gioco</button>
@@ -288,65 +285,6 @@
       </div>
       <div class="modal-body">
         <div id="seleziona-lista" class="select-list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modale genera con AI -->
-  <div id="modal-ai" class="modal hidden">
-    <div class="modal-backdrop"></div>
-    <div class="modal-content modal-large">
-      <div class="modal-header">
-        <h3>✨ Genera avventura con AI</h3>
-        <button class="modal-close">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="ai-intro">
-          <p>Incolla un testo (storia, documento, traccia) oppure carica un PDF. L'AI genererà una bozza di avventura completa che potrai modificare nell'editor.</p>
-        </div>
-
-        <div class="form-grid" style="margin-top:16px">
-          <label class="full-width">Chiave API Anthropic
-            <div class="api-key-wrap">
-              <input type="password" id="ai-api-key" placeholder="sk-ant-...">
-              <a href="https://console.anthropic.com/keys" target="_blank" class="link-small">Ottieni chiave →</a>
-            </div>
-            <span class="field-hint">La chiave non viene mai salvata né inviata a server di terze parti — viene usata solo per chiamare direttamente l'API Anthropic dal tuo browser.</span>
-          </label>
-
-          <label class="full-width">Sorgente del contenuto
-            <div class="ai-source-tabs">
-              <button class="tab-btn active" data-tab="testo">📝 Testo</button>
-              <button class="tab-btn" data-tab="pdf">📄 PDF</button>
-            </div>
-          </label>
-
-          <div id="ai-tab-testo" class="full-width ai-tab active">
-            <label>Testo da cui generare l'avventura
-              <textarea id="ai-testo" rows="10" placeholder="Incolla qui la storia, il documento o la traccia da cui vuoi generare l'avventura..."></textarea>
-            </label>
-          </div>
-
-          <div id="ai-tab-pdf" class="full-width ai-tab" style="display:none">
-            <label>Carica un file PDF
-              <div class="pdf-drop-area" id="pdf-drop-area">
-                <span id="pdf-drop-label">Trascina un PDF qui oppure clicca per selezionarlo</span>
-                <input type="file" id="ai-pdf-input" accept=".pdf" style="display:none">
-              </div>
-            </label>
-            <div id="pdf-preview" class="pdf-preview hidden"></div>
-          </div>
-
-          <label class="full-width">Istruzioni aggiuntive per l'AI (opzionale)
-            <input type="text" id="ai-istruzioni" placeholder="es. Ambientazione medievale, 5 stanze, livello scuola media...">
-          </label>
-        </div>
-
-        <div id="ai-status" class="ai-status hidden"></div>
-      </div>
-      <div class="modal-footer">
-        <span id="ai-progress" class="ai-progress"></span>
-        <button id="btn-genera-avventura" class="btn-primary">✨ Genera avventura</button>
       </div>
     </div>
   </div>
