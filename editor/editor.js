@@ -41,21 +41,29 @@ function toast(msg, duration = 2000) {
   toast._t = setTimeout(() => el.classList.add('hidden'), duration);
 }
 
-function salvaLocalStorage() {
-  localStorage.setItem('adventure_editor_data', JSON.stringify(avventura));
+function getAdventureId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('id') || 'default';
 }
 
 function caricaLocalStorage() {
-  const raw = localStorage.getItem('adventure_editor_data');
+  const id = getAdventureId();
+  const raw = localStorage.getItem('adventure_' + id);
   if (raw) {
-    try {
-      avventura = JSON.parse(raw);
-      return true;
-    } catch (e) {
-      console.error('Errore caricamento localStorage', e);
-    }
+    try { avventura = JSON.parse(raw); return true; } catch(e) {}
   }
   return false;
+}
+
+function salvaLocalStorage() {
+  const id = getAdventureId();
+  localStorage.setItem('adventure_' + id, JSON.stringify(avventura));
+  // aggiorna metadati nell'index
+  let index = JSON.parse(localStorage.getItem('adventures_index') || '[]');
+  const i = index.findIndex(a => a.id === id);
+  const meta = { id, titolo: avventura.meta?.titolo || 'Senza titolo', autore: avventura.meta?.autore || '', aggiornatoIl: new Date().toISOString() };
+  if (i >= 0) index[i] = meta; else index.push(meta);
+  localStorage.setItem('adventures_index', JSON.stringify(index));
 }
 
 // ─── Navigazione sezioni ─────────────────────────────────────
@@ -859,6 +867,8 @@ async function esportaGioco() {
 
 function init() {
   caricaLocalStorage();
+  // Titolo pagina dinamico
+  document.title = 'Editor — ' + (avventura.meta?.titolo || 'Nuova avventura');
 
   // Navigazione
   document.querySelectorAll('.nav-btn').forEach(btn => {
