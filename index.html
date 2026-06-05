@@ -3,218 +3,347 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Adventure Creator — Dashboard</title>
+  <title>Adventure Creator</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --viola: #7c3aed;
+      --viola-chiaro: #a78bfa;
+      --viola-hover: #6d28d9;
+      --sfondo: #0f0f1a;
+      --surface: #1c1c2e;
+      --border: rgba(255,255,255,.08);
+      --testo: #f0f0f0;
+      --muted: #6b7280;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0f0f1a;
-      color: #f0f0f0;
+      background: var(--sfondo);
+      color: var(--testo);
       min-height: 100vh;
+    }
+
+    /* ── HERO ─────────────────────────────────────────── */
+
+    .hero {
       display: flex;
       flex-direction: column;
-    }
-
-    /* ── Header ── */
-    header {
-      display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 20px 40px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      background: #0f0f1a;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 64px;
     }
 
-    header h1 {
-      font-size: 22px;
+    .logo-tag {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #33ff33;
+      letter-spacing: 3px;
+      margin-bottom: 28px;
+      opacity: .7;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 58px);
       font-weight: 800;
       background: linear-gradient(135deg, #a78bfa, #6366f1);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+
+    .hero .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      line-height: 1.7;
+      max-width: 500px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--viola);
+      color: #fff;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      box-shadow: 0 4px 20px rgba(124,58,237,.4);
+    }
+    .btn-cta-primary:hover { background: var(--viola-hover); transform: translateY(-2px); }
+
+    .btn-cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--viola-chiaro);
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      border: 2px solid rgba(124,58,237,.5);
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-cta-secondary:hover { background: rgba(124,58,237,.1); border-color: var(--viola); }
+
+    /* ── FEATURES ─────────────────────────────────────── */
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .feature {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+    }
+
+    .feature .icon { font-size: 26px; margin-bottom: 10px; }
+    .feature h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: #e5e7eb; }
+    .feature p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── DIVISORE ─────────────────────────────────────── */
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── DASHBOARD ─────────────────────────────────────── */
+
+    .dashboard-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .dashboard-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e5e7eb;
     }
 
     .btn-nuova {
-      background: #7c3aed;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--viola);
       color: #fff;
       border: none;
       padding: 10px 22px;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
       transition: background .2s, transform .15s;
     }
-    .btn-nuova:hover { background: #6d28d9; transform: translateY(-1px); }
+    .btn-nuova:hover { background: var(--viola-hover); transform: translateY(-1px); }
 
-    /* ── Main ── */
-    main {
-      flex: 1;
-      padding: 40px;
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    /* ── Empty state ── */
-    .empty-state {
-      text-align: center;
-      padding: 80px 20px;
-    }
-    .empty-illustration {
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      color: #4b5563;
-      line-height: 1.5;
-      margin-bottom: 28px;
-      white-space: pre;
-    }
-    .empty-state h2 {
-      font-size: 24px;
-      color: #e5e7eb;
-      margin-bottom: 10px;
-    }
-    .empty-state p {
-      color: #6b7280;
-      margin-bottom: 32px;
-      font-size: 16px;
-    }
-    .btn-esempio {
-      background: transparent;
-      color: #a78bfa;
-      border: 2px solid #7c3aed;
-      padding: 12px 28px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s, color .2s;
-    }
-    .btn-esempio:hover { background: #7c3aed; color: #fff; }
-
-    /* ── Grid ── */
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #6b7280;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
+    /* ── CARDS ─────────────────────────────────────────── */
 
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 18px;
     }
 
     .card {
-      background: #1c1c2e;
-      border: 1px solid rgba(255,255,255,.08);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 24px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       transition: border-color .2s, transform .15s;
     }
     .card:hover { border-color: rgba(124,58,237,.4); transform: translateY(-2px); }
 
-    .card-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: #f9fafb;
-    }
-    .card-meta {
-      font-size: 13px;
-      color: #6b7280;
-    }
+    .card-title { font-size: 16px; font-weight: 700; color: #f9fafb; }
+    .card-meta { font-size: 12px; color: var(--muted); }
+
     .card-actions {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 12px;
+      margin-top: 14px;
     }
+
     .btn-apri {
-      background: #7c3aed;
+      background: var(--viola);
       color: #fff;
       border: none;
       padding: 8px 20px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: background .2s;
     }
-    .btn-apri:hover { background: #6d28d9; }
+    .btn-apri:hover { background: var(--viola-hover); }
 
     .btn-elimina {
       background: transparent;
       color: #ef4444;
-      border: 1px solid rgba(239,68,68,.3);
+      border: 1px solid rgba(239,68,68,.25);
       padding: 7px 10px;
       border-radius: 8px;
       font-size: 14px;
       cursor: pointer;
       transition: background .2s;
+      line-height: 1;
     }
-    .btn-elimina:hover { background: rgba(239,68,68,.15); }
+    .btn-elimina:hover { background: rgba(239,68,68,.12); }
 
-    /* ── Card esempio ── */
     .card-esempio {
-      background: rgba(124,58,237,.08);
+      background: rgba(124,58,237,.07);
       border: 1px dashed rgba(124,58,237,.4);
     }
-    .card-esempio .card-title { color: #a78bfa; }
-    .card-esempio .card-meta { color: #7c3aed; opacity: .8; }
+    .card-esempio .card-title { color: var(--viola-chiaro); }
+    .card-esempio .card-meta { color: rgba(167,139,250,.7); }
 
-    /* ── Footer ── */
-    footer {
+    /* ── EMPTY STATE ───────────────────────────────────── */
+
+    .empty-state {
+      grid-column: 1 / -1;
       text-align: center;
-      padding: 20px;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-ascii {
+      font-family: 'Courier New', monospace;
       font-size: 12px;
       color: #374151;
-      border-top: 1px solid rgba(255,255,255,.04);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      white-space: pre;
+    }
+
+    .empty-state p { font-size: 15px; color: var(--muted); }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #374151;
+      border-top: 1px solid var(--border);
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Adventure Creator</h1>
-    <button class="btn-nuova" onclick="nuovaAvventura()">&#xFF0B; Nuova avventura</button>
-  </header>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="logo-tag">[ ADVENTURE CREATOR ]</div>
+    <h1>Crea avventure<br>testuali educative</h1>
+    <p class="subtitle">
+      Editor visuale per docenti. Nessun codice richiesto.<br>
+      Esporta un gioco standalone pronto da giocare nel browser.
+    </p>
+    <div class="hero-cta">
+      <button class="btn-cta-primary" onclick="nuovaAvventura()">🎮 Nuova avventura</button>
+      <button class="btn-cta-secondary" onclick="scrollToDashboard()">📂 Le mie avventure</button>
+    </div>
+  </section>
 
-  <main>
-    <div id="dashboard"></div>
-  </main>
+  <!-- FEATURES -->
+  <div class="features">
+    <div class="feature">
+      <div class="icon">🏠</div>
+      <h3>Stanze &amp; connessioni</h3>
+      <p>Crea ambienti collegati con uscite N/S/E/O e uscite condizionali sbloccabili.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">⚡</div>
+      <h3>Azioni SE → ALLORA</h3>
+      <p>Configura condizioni ed effetti senza scrivere codice. Inventario, flags, dialoghi.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🎮</div>
+      <h3>Esporta &amp; gioca</h3>
+      <p>Genera un file HTML standalone offline-ready, pubblicabile su Netlify o Vercel.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">💾</div>
+      <h3>Salvataggio automatico</h3>
+      <p>Le avventure vengono salvate nel browser. Esporta JSON per backup e condivisione.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- DASHBOARD -->
+  <section class="dashboard-section" id="dashboard-section">
+    <div class="dashboard-header">
+      <h2>Le mie avventure</h2>
+      <button class="btn-nuova" onclick="nuovaAvventura()">＋ Nuova avventura</button>
+    </div>
+    <div class="cards-grid" id="cards-grid"></div>
+  </section>
 
   <footer>Adventure Creator — nessuna dipendenza, tutto nel browser</footer>
 
   <script>
-    // ── Avventura esempio ──────────────────────────────────────
+    /* ── Avventura esempio ─────────────────────────────────────── */
     const AVVENTURA_ESEMPIO = {"meta":{"titolo":"Il Cammino del Cavaliere","autore":"Esempio didattico","intro":"Siete nel Medioevo, anno 1200. Avete sempre sognato di diventare un cavaliere. Il vostro viaggio inizia oggi, nel villaggio ai piedi del grande castello...\n\nDigita AIUTO per vedere i comandi disponibili.","stanza_iniziale":"villaggio","testo_vittoria":"Il Castellano vi cinge la spalla con la sua spada e pronuncia le parole solenni: 'Con questo gesto vi faccio Cavaliere. Proteggete i deboli, siate giusti e coraggiosi.' Avete completato il vostro cammino. Siete un Cavaliere!","testo_sconfitta":"Non eravate ancora pronti. Un cavaliere deve studiare, allenarsi e dimostrare il proprio valore. Riprovate dall'inizio."},"stanze":{"villaggio":{"id":"villaggio","nome":"Il Villaggio","descrizione":"Siete nel villaggio di Roccastella. Intorno a voi le case di pietra grigia, un pozzo al centro della piazza. In lontananza si erge il grande Castello del Conte. Un anziano cavaliere, il Maestro Aldric, vi osserva con curiosità.\n\nUna strada lastricata conduce a nord verso il castello.","descrizione_ritorno":"Siete tornati nel villaggio. Il Maestro Aldric è ancora qui.","uscite":{"nord":"castello_ingresso","sud":null,"est":null,"ovest":null},"uscite_condizionali":[],"oggetti":[],"personaggi":["maestro_aldric"],"azioni":["parla_maestro_inizio"]},"castello_ingresso":{"id":"castello_ingresso","nome":"Ingresso del Castello","descrizione":"Varcate il portone di quercia del castello. La grande sala d'ingresso è decorata con stemmi e stendardi. Una guardia armata presidia l'entrata. Il Castellano Don Rodrigo vi accoglie con sguardo severo.\n\nA est si trova la Sala d'Armi. A ovest la Biblioteca. A sud si torna al villaggio.","descrizione_ritorno":"Siete nell'ingresso del castello. Don Rodrigo vi osserva.","uscite":{"nord":null,"sud":"villaggio","est":"sala_armi","ovest":"biblioteca"},"uscite_condizionali":[{"direzione":"nord","destinazione":"cortile_torneo","condizioni":[{"tipo":"flag_vero","valore":"ammesso_al_torneo"}]}],"oggetti":[],"personaggi":["castellano"],"azioni":["parla_castellano_inizio","parla_castellano_pronto"]},"sala_armi":{"id":"sala_armi","nome":"Sala d'Armi","descrizione":"La sala odora di ferro e cuoio. Lungo le pareti sono appese spade, lance e scudi. Al centro, una rastrelliera con armi da addestramento. Una spada di legno è appesa vicino alla porta — è quella usata dai paggi per esercitarsi.\n\nA ovest si torna all'ingresso.","descrizione_ritorno":"Siete nella Sala d'Armi.","uscite":{"nord":null,"sud":null,"est":null,"ovest":"castello_ingresso"},"uscite_condizionali":[],"oggetti":["spada_legno","scudo"],"personaggi":[],"azioni":["esamina_armi_sala"]},"biblioteca":{"id":"biblioteca","nome":"Biblioteca del Castello","descrizione":"Scaffali di legno scuro coprono ogni parete, carichi di manoscritti e pergamene. La luce filtra da una piccola finestra. Fra Benedetto, il monaco bibliotecario, è chino su un testo antico.\n\nSul tavolo centrale è aperto il 'Codice della Cavalleria'.\n\nA est si torna all'ingresso.","descrizione_ritorno":"Siete nella biblioteca. Fra Benedetto saluta con un cenno.","uscite":{"nord":null,"sud":null,"est":"castello_ingresso","ovest":null},"uscite_condizionali":[],"oggetti":["codice_cavalleria"],"personaggi":["fra_benedetto"],"azioni":["leggi_codice","parla_fra_benedetto"]},"cortile_torneo":{"id":"cortile_torneo","nome":"Cortile del Torneo","descrizione":"Il grande cortile lastricato è il luogo dove i cavalieri si addestrano. Manichini di paglia servono da bersagli. Altri giovani scudieri si esercitano con la spada.\n\nQui potete mettere alla prova le vostre abilità. A sud si torna all'ingresso.","descrizione_ritorno":"Siete nel cortile. I manichini attendono.","uscite":{"nord":null,"sud":"castello_ingresso","est":null,"ovest":null},"uscite_condizionali":[{"direzione":"nord","destinazione":"cappella","condizioni":[{"tipo":"flag_vero","valore":"addestramento_completato"}]}],"oggetti":[],"personaggi":[],"azioni":["addestrati_senza_spada","addestrati_con_spada","indossa_armatura_cortile"]},"cappella":{"id":"cappella","nome":"Cappella del Castello","descrizione":"La cappella è silenziosa e solenne. Candele illuminano l'altare. Don Rodrigo è qui, in piena armatura, con la sua spada sguainata. Vi guarda negli occhi.\n\n'Siete pronti a ricevere l'investitura cavalleresca?'","descrizione_ritorno":"Siete nella cappella. Il momento della cerimonia si avvicina.","uscite":{"nord":null,"sud":"cortile_torneo","est":null,"ovest":null},"uscite_condizionali":[],"oggetti":[],"personaggi":["castellano"],"azioni":["chiedi_investitura_senza_requisiti","chiedi_investitura_completa"]}},"oggetti":{"spada_legno":{"id":"spada_legno","nome":"Spada di legno","sinonimi":["spada","legno","arma"],"descrizione":"Una spada di legno consumata dall'uso, ideale per l'addestramento. I migliori cavalieri hanno iniziato così.","raccoglibile":true,"visibile":true},"scudo":{"id":"scudo","nome":"Scudo con stemma","sinonimi":["scudo","stemma","difesa"],"descrizione":"Uno scudo rotondo con lo stemma del castello: un'aquila dorata su campo azzurro. Ogni cavaliere deve conoscere l'araldica.","raccoglibile":true,"visibile":true},"codice_cavalleria":{"id":"codice_cavalleria","nome":"Codice della Cavalleria","sinonimi":["codice","libro","pergamena","manoscritto"],"descrizione":"Il Codice della Cavalleria elenca i valori fondamentali: Lealtà al signore, Protezione dei deboli, Coraggio in battaglia, Fede, Onore sopra ogni cosa. Ogni cavaliere deve conoscerlo a memoria.","raccoglibile":true,"visibile":true},"armatura":{"id":"armatura","nome":"Armatura da cavaliere","sinonimi":["armatura","corazza","elmo"],"descrizione":"Un'armatura completa in ferro lucidato. Pesa molto ma protegge in battaglia. È il simbolo del cavaliere.","raccoglibile":true,"visibile":false}},"personaggi":{"maestro_aldric":{"id":"maestro_aldric","nome":"Maestro Aldric","sinonimi":["aldric","maestro","cavaliere","anziano"],"descrizione":"Un cavaliere anziano dai capelli bianchi. Le sue mani portano i segni di decenni di battaglie. I suoi occhi brillano ancora di saggezza.","dialogo_default":"Il Maestro Aldric vi sorride: 'Per diventare cavaliere dovete recarvi al castello. Parlate con il Castellano Don Rodrigo. Ma prima di tutto, studiate e allenatevi. Un cavaliere ignorante è un cavaliere pericoloso.'"},"castellano":{"id":"castellano","nome":"Don Rodrigo","sinonimi":["rodrigo","castellano","conte","signore"],"descrizione":"Don Rodrigo è un uomo imponente sulla cinquantina. La sua armatura porta i segni di molte battaglie vinte. Il suo sguardo è severo ma giusto.","dialogo_default":"Don Rodrigo vi guarda dall'alto: 'Volete diventare cavalieri? Le parole non bastano. Dimostrate il vostro valore: allenatevi nella Sala d'Armi, studiate il Codice nella Biblioteca, poi tornate da me.'"},"fra_benedetto":{"id":"fra_benedetto","nome":"Fra Benedetto","sinonimi":["benedetto","monaco","frate","bibliotecario"],"descrizione":"Un monaco con la tonaca marrone e la testa rasata. Le dita inchiostrate tradiscono ore di copiatura di manoscritti.","dialogo_default":"Fra Benedetto alza gli occhi dal testo: 'Sapere e virtù sono le armi più affilate. Il Codice della Cavalleria che vedete sul tavolo è il fondamento di ogni buon cavaliere. Leggetelo con attenzione.'"}},"azioni":{"parla_maestro_inizio":{"id":"parla_maestro_inizio","verbo":"PARLA","target":"aldric","sinonimi_target":["maestro","cavaliere","anziano"],"stanza":"villaggio","condizioni":[],"effetti":[{"tipo":"testo","valore":"Maestro Aldric vi pone una mano sulla spalla:\n\n'Giovane, il cammino del cavaliere è lungo e impegnativo. Nel Medioevo, un ragazzo iniziava come PAGGIO a 7 anni, imparando le buone maniere e servendo al castello. A 14 anni diventava SCUDIERO, addestrandosi con le armi e seguendo un cavaliere in battaglia. Solo dopo anni di servizio e prove poteva ricevere l'INVESTITURA e diventare CAVALIERE.\n\nOggi avrete l'opportunità di percorrere questo cammino. Recatevi al castello a nord!'"}],"priorita":0},"parla_castellano_inizio":{"id":"parla_castellano_inizio","verbo":"PARLA","target":"rodrigo","sinonimi_target":["castellano","conte","signore","don"],"stanza":"castello_ingresso","condizioni":[{"tipo":"flag_falso","valore":"ammesso_al_torneo"}],"effetti":[{"tipo":"testo","valore":"Don Rodrigo vi fissa con occhi penetranti:\n\n'Volete l'investitura? Dovete dimostrare tre cose:\n1. FORZA — Allenatevi nel cortile (avrete bisogno della spada di legno dalla Sala d'Armi)\n2. SAPIENZA — Studiate il Codice della Cavalleria in Biblioteca\n3. VIRTÙ — Dimostrate di conoscere i valori cavallereschi\n\nQuando sarete pronti, tornate da me.'"}],"priorita":0},"parla_castellano_pronto":{"id":"parla_castellano_pronto","verbo":"PARLA","target":"rodrigo","sinonimi_target":["castellano","conte","signore","don"],"stanza":"castello_ingresso","condizioni":[{"tipo":"ha_oggetto","valore":"spada_legno"},{"tipo":"ha_oggetto","valore":"codice_cavalleria"},{"tipo":"flag_falso","valore":"ammesso_al_torneo"}],"effetti":[{"tipo":"testo","valore":"Don Rodrigo vi guarda a lungo, poi annuisce lentamente:\n\n'Avete la spada — avete iniziato il vostro addestramento. Avete il Codice — conoscete i valori cavallereschi. Bene.\n\nOra dovete affrontare la prova finale: il torneo nel cortile. Allenatevi, dimostrate il vostro valore, e poi verrete alla cappella per l'investitura.'"},{"tipo":"attiva_flag","valore":"ammesso_al_torneo"},{"tipo":"testo","valore":"Il passaggio verso nord, al cortile del torneo, è ora aperto."}],"priorita":10},"esamina_armi_sala":{"id":"esamina_armi_sala","verbo":"ESAMINA","target":"armi","sinonimi_target":["rastrelliera","sala","muri","pareti"],"stanza":"sala_armi","condizioni":[],"effetti":[{"tipo":"testo","valore":"Osservate le armi appese alle pareti. Una didascalia spiega:\n\n⚔ TIPI DI ARMI MEDIEVALI:\n• Spada lunga — arma principale del cavaliere\n• Lancia — usata a cavallo nelle cariche\n• Mazza ferrata — efficace contro le armature\n• Arco lungo — arma degli arcieri a piedi\n\nI cavalieri si addestravano per anni prima di poter usare queste armi in battaglia."}],"priorita":0},"leggi_codice":{"id":"leggi_codice","verbo":"LEGGI","target":"codice","sinonimi_target":["libro","manoscritto","pergamena","cavalleria"],"stanza":"biblioteca","condizioni":[],"effetti":[{"tipo":"testo","valore":"Leggete il Codice della Cavalleria:\n\n📜 I SETTE VALORI DEL CAVALIERE:\n1. LEALTÀ — Fedeltà assoluta al proprio signore\n2. PRODEZZA — Coraggio e abilità in battaglia\n3. CORTESIA — Rispetto e buone maniere\n4. GENEROSITÀ — Aiutare i bisognosi\n5. FEDE — Devozione alla religione\n6. ONORE — Mantenere sempre la parola data\n7. PROTEZIONE — Difendere i deboli e gli innocenti\n\nQuesti valori formavano il codice morale della cavalleria medievale."},{"tipo":"aggiungi_oggetto","valore":"codice_cavalleria"},{"tipo":"attiva_flag","valore":"codice_letto"}],"priorita":0},"parla_fra_benedetto":{"id":"parla_fra_benedetto","verbo":"PARLA","target":"benedetto","sinonimi_target":["monaco","frate","bibliotecario","fra"],"stanza":"biblioteca","condizioni":[],"effetti":[{"tipo":"testo","valore":"Fra Benedetto vi racconta:\n\n'Nel Medioevo, i cavalieri non erano solo guerrieri. Dovevano anche saper leggere, conoscere la storia e parlare bene. La Chiesa aveva un ruolo fondamentale: la cerimonia dell'investitura si svolgeva proprio in una cappella, dopo una notte di preghiera e meditazione chiamata VEGLIA D'ARMI.\n\nIl cavaliere giurava di usare la sua forza solo per il bene, mai per la sopraffazione.'"}],"priorita":0},"addestrati_senza_spada":{"id":"addestrati_senza_spada","verbo":"ADDESTRATI","target":"","sinonimi_target":["allenati","esercitati","combatti"],"stanza":"cortile_torneo","condizioni":[{"tipo":"non_ha_oggetto","valore":"spada_legno"}],"effetti":[{"tipo":"testo","valore":"Tentate di addestrarvi a mani nude, ma senza una spada non potete imparare le tecniche di combattimento. Cercate una spada di legno nella Sala d'Armi."}],"priorita":0},"addestrati_con_spada":{"id":"addestrati_con_spada","verbo":"ADDESTRATI","target":"","sinonimi_target":["allenati","esercitati","combatti"],"stanza":"cortile_torneo","condizioni":[{"tipo":"ha_oggetto","valore":"spada_legno"},{"tipo":"flag_falso","valore":"addestramento_completato"}],"effetti":[{"tipo":"testo","valore":"Con la spada di legno vi esercitate per ore contro i manichini di paglia. Un anziano scudiero vi osserva e vi corregge la postura.\n\n⚔ TECNICHE DI COMBATTIMENTO MEDIEVALE:\n• Guardia alta — protezione della testa\n• Affondo — attacco diretto al corpo\n• Parata — deviare il colpo nemico\n• Disarmo — togliere l'arma all'avversario\n\nAl tramonto, siete esausti ma avete imparato molto."},{"tipo":"attiva_flag","valore":"addestramento_completato"},{"tipo":"testo","valore":"Il vostro addestramento è completato. Sentite di aver fatto progressi significativi. Il passaggio verso la cappella a nord si apre..."},{"tipo":"aggiungi_oggetto","valore":"armatura"}],"priorita":10},"indossa_armatura_cortile":{"id":"indossa_armatura_cortile","verbo":"INDOSSA","target":"armatura","sinonimi_target":["corazza","elmo","armatura"],"stanza":"cortile_torneo","condizioni":[{"tipo":"ha_oggetto","valore":"armatura"}],"effetti":[{"tipo":"testo","valore":"Indossate l'armatura completa. È pesante — almeno 25 kg — ma vi fa sentire pronti per la cerimonia. Ora potete recarvi alla cappella per l'investitura."}],"priorita":0},"chiedi_investitura_senza_requisiti":{"id":"chiedi_investitura_senza_requisiti","verbo":"CHIEDI","target":"investitura","sinonimi_target":["cerimonia","cavaliere","investitura"],"stanza":"cappella","condizioni":[{"tipo":"flag_falso","valore":"addestramento_completato"}],"effetti":[{"tipo":"testo","valore":"Don Rodrigo scuote la testa:\n\n'Non siete ancora pronti. Un cavaliere deve aver completato il suo addestramento e conoscere il Codice della Cavalleria. Tornate quando sarete pronti.'"}],"priorita":0},"chiedi_investitura_completa":{"id":"chiedi_investitura_completa","verbo":"CHIEDI","target":"investitura","sinonimi_target":["cerimonia","cavaliere","investitura"],"stanza":"cappella","condizioni":[{"tipo":"flag_vero","valore":"addestramento_completato"},{"tipo":"ha_oggetto","valore":"codice_cavalleria"},{"tipo":"ha_oggetto","valore":"armatura"}],"effetti":[{"tipo":"testo","valore":"Don Rodrigo annuisce solennemente:\n\n'Avete studiato il Codice, vi siete addestrati, avete dimostrato determinazione. È giunto il momento.'\n\nVi inginocchiate davanti all'altare. Don Rodrigo posa la spada sulla vostra spalla destra, poi sulla sinistra..."},{"tipo":"vittoria"}],"priorita":10}},"flags":{"ammesso_al_torneo":false,"addestramento_completato":false,"codice_letto":false}};
 
-    // ── localStorage helpers ───────────────────────────────────
+    /* ── Helpers localStorage ───────────────────────────────────── */
     function caricaIndex() {
       try { return JSON.parse(localStorage.getItem('adventures_index') || '[]'); }
       catch(e) { return []; }
     }
-
     function salvaIndex(arr) {
       localStorage.setItem('adventures_index', JSON.stringify(arr));
     }
 
-    // ── Azioni ─────────────────────────────────────────────────
+    /* ── Azioni ─────────────────────────────────────────────────── */
     function nuovaAvventura() {
       const id = 'adv_' + Date.now();
       const index = caricaIndex();
       index.push({ id, titolo: 'Nuova avventura', autore: '', aggiornatoIl: new Date().toISOString() });
       salvaIndex(index);
+      // Salva avventura vuota così l'editor la trova subito
+      const vuota = { meta:{ titolo:'Nuova avventura', autore:'', intro:'', stanza_iniziale:'', testo_vittoria:'', testo_sconfitta:'' }, stanze:{}, oggetti:{}, personaggi:{}, azioni:{}, flags:{} };
+      localStorage.setItem('adventure_' + id, JSON.stringify(vuota));
       window.location.href = 'editor/index.html?id=' + id;
     }
 
@@ -232,70 +361,68 @@
     }
 
     function caricaEsempio() {
-      const id = 'adv_' + Date.now();
+      const id = 'adv_esempio_' + Date.now();
       localStorage.setItem('adventure_' + id, JSON.stringify(AVVENTURA_ESEMPIO));
       const index = caricaIndex();
-      index.push({
-        id,
-        titolo: AVVENTURA_ESEMPIO.meta.titolo,
-        autore: AVVENTURA_ESEMPIO.meta.autore,
-        aggiornatoIl: new Date().toISOString()
-      });
+      index.push({ id, titolo: AVVENTURA_ESEMPIO.meta.titolo, autore: AVVENTURA_ESEMPIO.meta.autore, aggiornatoIl: new Date().toISOString() });
       salvaIndex(index);
-      window.location.href = 'editor/index.html?id=' + id;
+      window.location.href = 'editor/index.html?id=' + id + '&sezione=stanze';
     }
 
-    // ── Render ─────────────────────────────────────────────────
+    function scrollToDashboard() {
+      document.getElementById('dashboard-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ── Render ─────────────────────────────────────────────────── */
     function formatData(iso) {
-      try {
-        return new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' });
-      } catch(e) { return ''; }
+      try { return new Date(iso).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' }); }
+      catch(e) { return ''; }
     }
 
     function renderDashboard() {
       const index = caricaIndex();
-      const container = document.getElementById('dashboard');
+      const grid = document.getElementById('cards-grid');
+      let html = '';
 
       if (index.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-illustration">  [ ADVENTURE CREATOR ]\n\n  +----------+     +----------+\n  |  Stanza  |---->|  Stanza  |\n  |    A     |     |    B     |\n  +----------+     +----------+\n       |                |\n       v                v\n  +----------+     +----------+\n  |  Stanza  |     |  FINE!   |\n  |    C     |     |  Vittoria|\n  +----------+     +----------+</div>
-            <h2>Nessuna avventura ancora</h2>
-            <p>Crea la tua prima avventura testuale o carica un esempio per iniziare.</p>
-            <button class="btn-esempio" onclick="caricaEsempio()">Carica avventura esempio</button>
-          </div>`;
-        return;
-      }
-
-      let html = `<p class="section-title">Le tue avventure</p><div class="cards-grid">`;
-
-      index.forEach(adv => {
-        html += `
-          <div class="card">
+        html += `<div class="empty-state">
+          <div class="empty-ascii">  +----------+     +----------+
+  |  Stanza  |---->|  Stanza  |
+  |    A     |     |    B     |
+  +----------+     +----------+
+       |                |
+       v                v
+  +----------+     +----------+
+  |  Stanza  |     |  FINE!   |
+  |    C     |     | Vittoria |
+  +----------+     +----------+</div>
+          <p>Nessuna avventura ancora — creane una o carica l'esempio qui sotto.</p>
+        </div>`;
+      } else {
+        index.forEach(adv => {
+          html += `<div class="card">
             <div class="card-title">${adv.titolo || 'Senza titolo'}</div>
             <div class="card-meta">${adv.autore ? adv.autore + ' &mdash; ' : ''}Modificata il ${formatData(adv.aggiornatoIl)}</div>
             <div class="card-actions">
               <button class="btn-apri" onclick="apriAvventura('${adv.id}')">Apri</button>
-              <button class="btn-elimina" onclick="eliminaAvventura('${adv.id}')" title="Elimina avventura">&#128465;</button>
+              <button class="btn-elimina" onclick="eliminaAvventura('${adv.id}')" title="Elimina">🗑</button>
             </div>
           </div>`;
-      });
+        });
+      }
 
-      // Card esempio sempre in fondo
-      html += `
-        <div class="card card-esempio">
-          <div class="card-title">Il Cammino del Cavaliere</div>
-          <div class="card-meta">Avventura esempio — Medioevo 1200</div>
-          <div class="card-actions">
-            <button class="btn-apri" onclick="caricaEsempio()">Carica</button>
-          </div>
-        </div>`;
+      // Card esempio sempre presente
+      html += `<div class="card card-esempio">
+        <div class="card-title">⚔ Il Cammino del Cavaliere</div>
+        <div class="card-meta">Avventura esempio · Medioevo didattico · 6 stanze</div>
+        <div class="card-actions">
+          <button class="btn-apri" onclick="caricaEsempio()">Carica esempio</button>
+        </div>
+      </div>`;
 
-      html += `</div>`;
-      container.innerHTML = html;
+      grid.innerHTML = html;
     }
 
-    // ── Init ───────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', renderDashboard);
   </script>
 

@@ -948,8 +948,13 @@ function init() {
     });
   });
 
-  // Render iniziale
-  renderSezione('impostazioni');
+  // Render iniziale: apri la sezione indicata nell'URL, oppure
+  // "stanze" se l'avventura ha già contenuto, altrimenti "impostazioni"
+  const params = new URLSearchParams(window.location.search);
+  const sezioneUrl = params.get('sezione');
+  const haContenuto = Object.keys(avventura.stanze).length > 0;
+  const sezioneInizio = sezioneUrl || (haContenuto ? 'stanze' : 'impostazioni');
+  mostraSezione(sezioneInizio);
 }
 
 document.addEventListener('DOMContentLoaded', init);
