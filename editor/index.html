@@ -126,6 +126,14 @@
           <label class="full-width">Descrizione ritorno (visite successive)
             <textarea id="stanza-descrizione-ritorno" rows="3" placeholder="Opzionale"></textarea>
           </label>
+          <label class="full-width">Immagine stanza (widescreen, es. 1280×400)
+            <div class="img-upload-area" id="img-upload-area">
+              <span id="img-upload-label">Clicca o trascina un'immagine (JPG, PNG, WebP)</span>
+              <input type="file" id="stanza-immagine-file" accept="image/*" style="display:none">
+            </div>
+            <div id="stanza-immagine-preview" class="img-preview hidden"></div>
+            <input type="hidden" id="stanza-immagine-data">
+          </label>
         </div>
         <h4>Uscite</h4>
         <div class="uscite-grid">

@@ -421,12 +421,11 @@
     outputEl.scrollTop = outputEl.scrollHeight;
   }
 
-  function mostraRiga(testo) {
-    if (!testo && testo !== '') return;
+  function mostraRiga(testo, classe) {
+    if (testo === undefined || testo === null) return;
     const p = document.createElement('p');
-    // Supporto grassetto **testo**
     p.innerHTML = testo.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    p.className = 'riga-output';
+    p.className = classe || 'riga-output';
     outputEl.appendChild(p);
   }
 
@@ -452,18 +451,79 @@
     if (inputEl) inputEl.disabled = true;
   }
 
+  // ─── Immagine stanza ───────────────────────────────────────
+
+  function aggiornaImmagine(stanzaId) {
+    const stanza = avventura.stanze[stanzaId];
+    const imgEl = document.getElementById('immagine-stanza');
+    const placeholder = document.getElementById('placeholder-immagine');
+    const nomeStanzaEl = document.getElementById('nome-stanza');
+
+    if (nomeStanzaEl) nomeStanzaEl.textContent = stanza?.nome || '';
+
+    if (!imgEl || !placeholder) return;
+
+    if (stanza?.immagine) {
+      imgEl.src = stanza.immagine;
+      imgEl.style.display = 'block';
+      placeholder.style.display = 'none';
+    } else {
+      imgEl.style.display = 'none';
+      placeholder.style.display = 'flex';
+    }
+  }
+
+  // ─── Override entraNellaStanza per aggiornare immagine ─────
+
+  const _entraNellaStanzaBase = entraNellaStanza;
+  function entraNellaStanzaConImmagine(id, testiBuffer) {
+    _entraNellaStanzaBase(id, testiBuffer);
+    aggiornaImmagine(id);
+  }
+  // Sostituisci il riferimento globale usato da eseguiVai e eseguiEffetti
+  entraNellaStanza = entraNellaStanzaConImmagine;
+
+  // ─── Schermata di benvenuto ────────────────────────────────
+
+  function mostraSchermataIntro(meta, onAvvia) {
+    const schermata = document.getElementById('schermata-benvenuto');
+    const gioco = document.getElementById('gioco');
+
+    document.getElementById('benv-titolo').textContent = meta.titolo || 'AVVENTURA';
+    document.getElementById('benv-autore').textContent = meta.autore ? '— ' + meta.autore + ' —' : '';
+    document.getElementById('benv-intro').textContent = meta.intro || '';
+
+    // Avvia al primo INVIO (o click)
+    const avvia = (e) => {
+      if (e.type === 'keydown' && e.key !== 'Enter') return;
+      schermata.style.display = 'none';
+      gioco.style.display = 'flex';
+      document.removeEventListener('keydown', avvia);
+      schermata.removeEventListener('click', avvia);
+      onAvvia();
+    };
+
+    document.addEventListener('keydown', avvia);
+    schermata.addEventListener('click', avvia);
+  }
+
+  // ─── Avvia gioco ───────────────────────────────────────────
+
   function avviaGioco(datiAvventura) {
     avventura = datiAvventura;
 
-    // Inizializza flags
     stato.flags = Object.assign({}, avventura.flags || {});
     stato.inventario = [];
     stato.visite = {};
     stato.finePartita = false;
 
     outputEl = document.getElementById('output');
-    inputEl = document.getElementById('input');
-    formEl = document.getElementById('form-input');
+    inputEl  = document.getElementById('input');
+    formEl   = document.getElementById('form-input');
+
+    // Imposta nome gioco nella barra
+    const nomeGiocoEl = document.getElementById('nome-gioco');
+    if (nomeGiocoEl) nomeGiocoEl.textContent = avventura.meta.titolo || '';
 
     formEl.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -475,23 +535,19 @@
       mostraRighe(risposte);
     });
 
-    // Mostra intro
-    if (avventura.meta.intro) {
-      mostraRiga(avventura.meta.intro);
-      mostraRiga('');
-    }
+    const iniziaPartita = () => {
+      const idInizio = avventura.meta.stanza_iniziale;
+      if (idInizio && avventura.stanze[idInizio]) {
+        const testi = [];
+        entraNellaStanza(idInizio, testi);
+        mostraRighe(testi);
+      } else {
+        mostraRiga('[Errore: nessuna stanza iniziale configurata]');
+      }
+      inputEl.focus();
+    };
 
-    // Stanza iniziale
-    const idInizio = avventura.meta.stanza_iniziale;
-    if (idInizio && avventura.stanze[idInizio]) {
-      const testi = [];
-      entraNellaStanza(idInizio, testi);
-      mostraRighe(testi);
-    } else {
-      mostraRiga('[Errore: nessuna stanza iniziale configurata]');
-    }
-
-    inputEl.focus();
+    mostraSchermataIntro(avventura.meta, iniziaPartita);
   }
 
   // Esponi al template

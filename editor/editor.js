@@ -160,6 +160,7 @@ function renderStanze() {
 function apriModaleStanza(id) {
   const stanza = id ? avventura.stanze[id] : {
     id: '', nome: '', descrizione: '', descrizione_ritorno: '',
+    immagine: '',
     uscite: { nord: null, sud: null, est: null, ovest: null },
     uscite_condizionali: [],
     oggetti: [], personaggi: [], azioni: [],
@@ -176,6 +177,10 @@ function apriModaleStanza(id) {
   document.getElementById('stanza-nome').value = stanza.nome;
   document.getElementById('stanza-descrizione').value = stanza.descrizione;
   document.getElementById('stanza-descrizione-ritorno').value = stanza.descrizione_ritorno || '';
+
+  // Immagine
+  document.getElementById('stanza-immagine-data').value = stanza.immagine || '';
+  aggiornaPreviewImmagine(stanza.immagine || '');
 
   // Uscite
   ['nord','sud','est','ovest'].forEach(dir => {
@@ -218,6 +223,7 @@ function salvaSzanza() {
     nome: document.getElementById('stanza-nome').value.trim(),
     descrizione: document.getElementById('stanza-descrizione').value.trim(),
     descrizione_ritorno: document.getElementById('stanza-descrizione-ritorno').value.trim(),
+    immagine: document.getElementById('stanza-immagine-data').value || '',
     uscite: {
       nord: document.getElementById('uscita-nord').value || null,
       sud: document.getElementById('uscita-sud').value || null,
@@ -863,6 +869,56 @@ async function esportaGioco() {
   toast('Gioco esportato!');
 }
 
+// ─── Upload immagine stanza ───────────────────────────────────
+
+function aggiornaPreviewImmagine(src) {
+  const preview = document.getElementById('stanza-immagine-preview');
+  if (!src) {
+    preview.classList.add('hidden');
+    preview.innerHTML = '';
+    return;
+  }
+  preview.classList.remove('hidden');
+  preview.innerHTML = `<img src="${src}" alt="anteprima stanza">
+    <button class="img-preview-remove" id="btn-rimuovi-immagine" title="Rimuovi immagine">×</button>`;
+  document.getElementById('btn-rimuovi-immagine').addEventListener('click', () => {
+    document.getElementById('stanza-immagine-data').value = '';
+    aggiornaPreviewImmagine('');
+  });
+}
+
+function bindUploadImmagine() {
+  const area = document.getElementById('img-upload-area');
+  const fileInput = document.getElementById('stanza-immagine-file');
+
+  area.addEventListener('click', () => fileInput.click());
+
+  area.addEventListener('dragover', (e) => { e.preventDefault(); area.classList.add('drag-over'); });
+  area.addEventListener('dragleave', () => area.classList.remove('drag-over'));
+  area.addEventListener('drop', (e) => {
+    e.preventDefault();
+    area.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) leggiImmagine(file);
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files[0]) leggiImmagine(e.target.files[0]);
+    e.target.value = '';
+  });
+}
+
+function leggiImmagine(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const src = e.target.result;
+    document.getElementById('stanza-immagine-data').value = src;
+    aggiornaPreviewImmagine(src);
+    document.getElementById('img-upload-label').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
 // ─── Init & binding eventi ────────────────────────────────────
 
 function init() {
@@ -876,6 +932,8 @@ function init() {
   });
 
   bindImpostazioni();
+
+  bindUploadImmagine();
 
   // Stanze
   document.getElementById('btn-nuova-stanza').addEventListener('click', () => apriModaleStanza(null));

@@ -10,73 +10,168 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --verde: #33ff33;
-      --ambra: #ffb000;
-      --sfondo: #0a0a0a;
-      --testo: #33ff33;
+      --verde:  #33ff33;
+      --ambra:  #ffb000;
+      --ciano:  #44eeff;
+      --sfondo: #050508;
+      --testo:  #33ff33;
+      --bordo:  #1a3a1a;
     }
 
-    body {
+    html, body {
+      height: 100%;
       background: var(--sfondo);
       color: var(--testo);
       font-family: 'VT323', 'Courier New', monospace;
-      font-size: 20px;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+      overflow: hidden;
     }
+
+    /* ── Layout principale ─────────────────────────────── */
 
     #gioco {
-      width: 100%;
-      max-width: 800px;
-      height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 0;
+      height: 100vh;
+      width: 100%;
     }
 
-    #titolo {
-      text-align: center;
-      font-size: 28px;
+    /* ── Barra titolo ──────────────────────────────────── */
+
+    #barra-titolo {
+      background: #000;
+      border-bottom: 2px solid var(--ambra);
+      padding: 4px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: 12px;
+    }
+
+    #barra-titolo #nome-gioco {
       color: var(--ambra);
-      padding: 12px 0 8px;
-      letter-spacing: 2px;
-      border-bottom: 1px solid #333;
+      font-size: 22px;
+      letter-spacing: 3px;
       text-transform: uppercase;
     }
+
+    #nome-stanza {
+      color: var(--ciano);
+      font-size: 18px;
+      letter-spacing: 1px;
+      opacity: .85;
+    }
+
+    /* ── Immagine stanza ───────────────────────────────── */
+
+    #contenitore-immagine {
+      width: 100%;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      /* Altezza: 38% del viewport, min 160px, max 320px */
+      height: clamp(160px, 38vh, 320px);
+      border-bottom: 3px solid var(--bordo);
+    }
+
+    #immagine-stanza {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      /* Leggero effetto CRT: scanlines */
+      image-rendering: pixelated;
+    }
+
+    /* Overlay scanlines CRT */
+    #contenitore-immagine::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,.18) 2px,
+        rgba(0,0,0,.18) 4px
+      );
+      pointer-events: none;
+    }
+
+    #placeholder-immagine {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    .placeholder-ascii {
+      font-family: 'Courier New', monospace;
+      font-size: clamp(9px, 1.2vw, 13px);
+      color: #1a2a1a;
+      line-height: 1.25;
+      white-space: pre;
+      text-align: center;
+      user-select: none;
+    }
+
+    /* ── Area testo ────────────────────────────────────── */
 
     #output {
       flex: 1;
       overflow-y: auto;
-      padding: 16px 4px;
-      line-height: 1.6;
+      padding: 12px 20px 8px;
+      line-height: 1.55;
+      font-size: clamp(16px, 2.2vw, 20px);
+      min-height: 0;
     }
 
-    #output::-webkit-scrollbar { width: 4px; }
-    #output::-webkit-scrollbar-thumb { background: #333; }
+    #output::-webkit-scrollbar { width: 5px; }
+    #output::-webkit-scrollbar-track { background: #000; }
+    #output::-webkit-scrollbar-thumb { background: #1a3a1a; border-radius: 2px; }
 
     .riga-output {
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       white-space: pre-wrap;
     }
 
-    .riga-output strong {
+    .riga-output strong { color: var(--ambra); }
+
+    .riga-nome-stanza {
       color: var(--ambra);
+      font-size: 1.15em;
+      letter-spacing: 1px;
+      margin-top: 8px;
+      margin-bottom: 2px;
     }
 
     .riga-input {
-      color: #666;
-      margin: 4px 0;
+      color: #3a5a3a;
+      margin: 3px 0;
+    }
+
+    .riga-sistema {
+      color: #557755;
+      font-style: italic;
+    }
+
+    /* ── Input ─────────────────────────────────────────── */
+
+    #zona-input {
+      border-top: 2px solid var(--bordo);
+      background: #000;
+      padding: 8px 16px 10px;
+      flex-shrink: 0;
     }
 
     #form-input {
       display: flex;
-      border-top: 1px solid #333;
-      padding-top: 12px;
-      gap: 8px;
       align-items: center;
+      gap: 8px;
     }
 
     #prompt {
@@ -91,71 +186,152 @@
       border: none;
       color: var(--testo);
       font-family: 'VT323', 'Courier New', monospace;
-      font-size: 20px;
+      font-size: clamp(16px, 2.2vw, 20px);
       outline: none;
       caret-color: var(--ambra);
     }
 
-    #input::placeholder { color: #333; }
+    #input::placeholder { color: #1a3a1a; }
+    #input:disabled { opacity: .4; }
+
+    /* ── Fine partita ──────────────────────────────────── */
 
     .schermata-fine {
-      margin-top: 20px;
+      margin: 12px 0;
       padding: 20px;
       text-align: center;
-      border: 1px solid;
+      border: 2px solid;
       line-height: 1.8;
     }
 
     .schermata-fine.vittoria {
       border-color: var(--ambra);
       color: var(--ambra);
-      font-size: 24px;
+      font-size: 1.2em;
     }
 
     .schermata-fine.sconfitta {
-      border-color: #ff3333;
-      color: #ff3333;
-      font-size: 22px;
+      border-color: #ff4444;
+      color: #ff4444;
+      font-size: 1.1em;
     }
 
     .schermata-fine button {
-      margin-top: 16px;
+      margin-top: 14px;
       background: transparent;
       border: 1px solid currentColor;
       color: inherit;
       font-family: inherit;
       font-size: 18px;
-      padding: 8px 24px;
+      padding: 8px 28px;
       cursor: pointer;
       letter-spacing: 1px;
+      transition: background .2s;
     }
-
     .schermata-fine button:hover { background: rgba(255,255,255,.1); }
 
-    /* Cursore lampeggiante su input */
+    /* ── Schermata di benvenuto ────────────────────────── */
+
+    #schermata-benvenuto {
+      position: fixed;
+      inset: 0;
+      background: var(--sfondo);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    #schermata-benvenuto .titolo-benvenuto {
+      color: var(--ambra);
+      font-size: clamp(28px, 5vw, 52px);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      border: 2px solid var(--ambra);
+      padding: 10px 32px;
+    }
+
+    #schermata-benvenuto .autore-benvenuto {
+      color: #557755;
+      font-size: 18px;
+      letter-spacing: 2px;
+      margin-bottom: 36px;
+    }
+
+    #schermata-benvenuto .testo-intro {
+      max-width: 680px;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.7;
+      color: var(--testo);
+      margin-bottom: 48px;
+      white-space: pre-wrap;
+    }
+
+    #schermata-benvenuto .invito {
+      color: var(--ambra);
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    #schermata-benvenuto .invito { animation: blink 1.2s step-end infinite; }
     #prompt { animation: blink 1s step-end infinite; }
   </style>
 </head>
 <body>
-  <div id="gioco">
-    <div id="titolo">__TITOLO__</div>
+
+  <!-- Schermata di benvenuto (mostrata prima del gioco) -->
+  <div id="schermata-benvenuto">
+    <div class="titolo-benvenuto" id="benv-titolo">ADVENTURE</div>
+    <div class="autore-benvenuto" id="benv-autore"></div>
+    <div class="testo-intro" id="benv-intro"></div>
+    <div class="invito">▶ PREMI INVIO PER INIZIARE ◀</div>
+  </div>
+
+  <!-- Gioco vero e proprio -->
+  <div id="gioco" style="display:none">
+
+    <div id="barra-titolo">
+      <span id="nome-gioco"></span>
+      <span id="nome-stanza"></span>
+    </div>
+
+    <div id="contenitore-immagine">
+      <img id="immagine-stanza" src="" alt="" style="display:none">
+      <div id="placeholder-immagine">
+        <div class="placeholder-ascii">
+          ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+          ░░                                                                           ░░
+          ░░                        [ nessuna immagine ]                              ░░
+          ░░                                                                           ░░
+          ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        </div>
+      </div>
+    </div>
+
     <div id="output"></div>
-    <form id="form-input" autocomplete="off">
-      <span id="prompt">&gt;</span>
-      <input type="text" id="input" placeholder="scrivi un comando..." autofocus>
-    </form>
+
+    <div id="zona-input">
+      <form id="form-input" autocomplete="off">
+        <span id="prompt">&gt;</span>
+        <input type="text" id="input" placeholder="scrivi un comando..." autofocus>
+      </form>
+    </div>
+
   </div>
 
   <script>
     const __ADVENTURE_DATA__ = /*__ADVENTURE_JSON__*/null;
     /*__ENGINE_JS__*/
     window.addEventListener('DOMContentLoaded', () => {
-      // Sostituisci titolo nella pagina
-      const titolo = __ADVENTURE_DATA__?.meta?.titolo || 'Avventura';
+      const dati = __ADVENTURE_DATA__;
+      const titolo = dati?.meta?.titolo || 'Avventura';
       document.title = titolo;
-      document.querySelectorAll('#titolo').forEach(el => el.textContent = titolo);
-      avviaGioco(__ADVENTURE_DATA__);
+      avviaGioco(dati);
     });
   </script>
 </body>
