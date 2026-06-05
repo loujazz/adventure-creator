@@ -262,6 +262,9 @@
     if (usciteDisp.length) {
       testiBuffer.push(`Uscite: ${usciteDisp.join(', ')}.`);
     }
+
+    // Aggiorna immagine e nome stanza nella UI del gioco
+    aggiornaImmagineUI(id);
   }
 
   // ─── Comandi di sistema ────────────────────────────────────
@@ -453,17 +456,19 @@
 
   // ─── Immagine stanza ───────────────────────────────────────
 
-  function aggiornaImmagine(stanzaId) {
+  // ─── Aggiorna immagine e nome stanza nella UI ─────────────
+  // Chiamata da entraNellaStanza ogni volta che si cambia stanza
+
+  function aggiornaImmagineUI(stanzaId) {
     const stanza = avventura.stanze[stanzaId];
-    const imgEl = document.getElementById('immagine-stanza');
-    const placeholder = document.getElementById('placeholder-immagine');
+    const imgEl        = document.getElementById('immagine-stanza');
+    const placeholder  = document.getElementById('placeholder-immagine');
     const nomeStanzaEl = document.getElementById('nome-stanza');
 
-    if (nomeStanzaEl) nomeStanzaEl.textContent = stanza?.nome || '';
-
+    if (nomeStanzaEl) nomeStanzaEl.textContent = stanza ? stanza.nome || '' : '';
     if (!imgEl || !placeholder) return;
 
-    if (stanza?.immagine) {
+    if (stanza && stanza.immagine) {
       imgEl.src = stanza.immagine;
       imgEl.style.display = 'block';
       placeholder.style.display = 'none';
@@ -473,43 +478,25 @@
     }
   }
 
-  // ─── Override entraNellaStanza per aggiornare immagine ─────
-
-  const _entraNellaStanzaBase = entraNellaStanza;
-  function entraNellaStanzaConImmagine(id, testiBuffer) {
-    _entraNellaStanzaBase(id, testiBuffer);
-    aggiornaImmagine(id);
-  }
-  // Sostituisci il riferimento globale usato da eseguiVai e eseguiEffetti
-  entraNellaStanza = entraNellaStanzaConImmagine;
-
   // ─── Schermata di benvenuto ────────────────────────────────
 
   function mostraSchermataIntro(meta, onAvvia) {
     const schermata = document.getElementById('schermata-benvenuto');
     const gioco     = document.getElementById('gioco');
-    const btnInizio = document.getElementById('btn-inizia');
+    const btn       = document.getElementById('btn-inizia');
 
     document.getElementById('benv-titolo').textContent = meta.titolo || 'AVVENTURA';
     document.getElementById('benv-autore').textContent = meta.autore ? '— ' + meta.autore + ' —' : '';
-    document.getElementById('benv-intro').textContent  = meta.intro || '';
+    document.getElementById('benv-intro').textContent  = meta.intro  || '';
 
-    let avviato = false;
-    const avvia = (e) => {
-      // Per keydown accetta solo Invio; click e submit passano sempre
-      if (e && e.type === 'keydown' && e.key !== 'Enter') return;
-      if (avviato) return;
-      avviato = true;
-      document.removeEventListener('keydown', avvia);
+    function avvia() {
       schermata.style.display = 'none';
-      gioco.style.display = 'flex';
+      gioco.style.display     = 'flex';
       onAvvia();
-    };
+    }
 
-    // Tre modi per iniziare: tasto Invio, clic sul pulsante, clic ovunque nella schermata
-    document.addEventListener('keydown', avvia);
-    if (btnInizio) btnInizio.addEventListener('click', avvia);
-    schermata.addEventListener('click', avvia);
+    // Click sul pulsante — unico punto di ingresso
+    btn.onclick = avvia;
   }
 
   // ─── Avvia gioco ───────────────────────────────────────────
@@ -517,40 +504,37 @@
   function avviaGioco(datiAvventura) {
     avventura = datiAvventura;
 
-    stato.flags = Object.assign({}, avventura.flags || {});
+    stato.flags     = Object.assign({}, avventura.flags || {});
     stato.inventario = [];
-    stato.visite = {};
+    stato.visite    = {};
     stato.finePartita = false;
 
     outputEl = document.getElementById('output');
     inputEl  = document.getElementById('input');
     formEl   = document.getElementById('form-input');
 
-    // Imposta nome gioco nella barra
-    const nomeGiocoEl = document.getElementById('nome-gioco');
-    if (nomeGiocoEl) nomeGiocoEl.textContent = avventura.meta.titolo || '';
+    document.getElementById('nome-gioco').textContent = avventura.meta.titolo || '';
 
-    formEl.addEventListener('submit', (e) => {
+    formEl.addEventListener('submit', function(e) {
       e.preventDefault();
-      const cmd = inputEl.value.trim();
+      var cmd = inputEl.value.trim();
       if (!cmd) return;
       mostraInput(cmd);
       inputEl.value = '';
-      const risposte = eseguiComando(cmd);
-      mostraRighe(risposte);
+      mostraRighe(eseguiComando(cmd));
     });
 
-    const iniziaPartita = () => {
-      const idInizio = avventura.meta.stanza_iniziale;
+    function iniziaPartita() {
+      var idInizio = avventura.meta.stanza_iniziale;
       if (idInizio && avventura.stanze[idInizio]) {
-        const testi = [];
+        var testi = [];
         entraNellaStanza(idInizio, testi);
         mostraRighe(testi);
       } else {
         mostraRiga('[Errore: nessuna stanza iniziale configurata]');
       }
       inputEl.focus();
-    };
+    }
 
     mostraSchermataIntro(avventura.meta, iniziaPartita);
   }

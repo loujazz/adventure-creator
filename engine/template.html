@@ -272,20 +272,22 @@
     }
 
     #btn-inizia {
-      background: transparent;
+      background: var(--ambra);
       border: 2px solid var(--ambra);
-      color: var(--ambra);
+      color: #000;
       font-family: 'VT323', 'Courier New', monospace;
-      font-size: 22px;
-      letter-spacing: 2px;
-      padding: 10px 28px;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      padding: 14px 40px;
       cursor: pointer;
-      transition: background .2s, color .2s;
+      transition: background .15s, color .15s, transform .1s;
+      text-transform: uppercase;
     }
-    #btn-inizia:hover { background: var(--ambra); color: #000; }
+    #btn-inizia:hover  { background: #fff; border-color: #fff; }
+    #btn-inizia:active { transform: scale(.97); }
 
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    #btn-inizia { animation: blink 1.2s step-end infinite; }
     #prompt { animation: blink 1s step-end infinite; }
   </style>
 </head>
@@ -296,7 +298,7 @@
     <div class="titolo-benvenuto" id="benv-titolo">ADVENTURE</div>
     <div class="autore-benvenuto" id="benv-autore"></div>
     <div class="testo-intro" id="benv-intro"></div>
-    <button id="btn-inizia">▶ PREMI INVIO O CLICCA PER INIZIARE ◀</button>
+    <button id="btn-inizia">▶ &nbsp; INIZIA IL GIOCO &nbsp; ◀</button>
   </div>
 
   <!-- Gioco vero e proprio -->
