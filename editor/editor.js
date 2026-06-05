@@ -852,8 +852,8 @@ async function generaHtmlGioco() {
   }
   const jsonAvventura = JSON.stringify(avventura);
   return templateHtml
-    .replace('/*__ADVENTURE_JSON__*/', jsonAvventura)
-    .replace('/*__ENGINE_JS__*/', engineJs);
+    .replace('/*__ADVENTURE_JSON__*/null', () => jsonAvventura)
+    .replace('/*__ENGINE_JS__*/', () => engineJs);
 }
 
 async function esportaGioco() {
