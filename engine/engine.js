@@ -489,14 +489,23 @@
     document.getElementById('benv-autore').textContent = meta.autore ? '— ' + meta.autore + ' —' : '';
     document.getElementById('benv-intro').textContent  = meta.intro  || '';
 
+    var avviato = false;
     function avvia() {
+      if (avviato) return;
+      avviato = true;
+      document.removeEventListener('keydown', onKey);
       schermata.style.display = 'none';
       gioco.style.display     = 'flex';
       onAvvia();
     }
 
-    // Click sul pulsante — unico punto di ingresso
+    function onKey(e) {
+      if (e.key === 'Enter' || e.keyCode === 13) avvia();
+    }
+
     btn.onclick = avvia;
+    window.__avviaPartita = avvia;
+    document.addEventListener('keydown', onKey);
   }
 
   // ─── Avvia gioco ───────────────────────────────────────────

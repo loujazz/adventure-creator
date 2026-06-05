@@ -298,7 +298,7 @@
     <div class="titolo-benvenuto" id="benv-titolo">ADVENTURE</div>
     <div class="autore-benvenuto" id="benv-autore"></div>
     <div class="testo-intro" id="benv-intro"></div>
-    <button id="btn-inizia">▶ &nbsp; INIZIA IL GIOCO &nbsp; ◀</button>
+    <button id="btn-inizia" onclick="window.__avviaPartita&&window.__avviaPartita()">▶ &nbsp; INIZIA IL GIOCO &nbsp; ◀</button>
   </div>
 
   <!-- Gioco vero e proprio -->
@@ -336,12 +336,18 @@
   <script>
     const __ADVENTURE_DATA__ = /*__ADVENTURE_JSON__*/null;
     /*__ENGINE_JS__*/
-    window.addEventListener('DOMContentLoaded', () => {
-      const dati = __ADVENTURE_DATA__;
-      const titolo = dati?.meta?.titolo || 'Avventura';
-      document.title = titolo;
-      avviaGioco(dati);
-    });
+    (function() {
+      function init() {
+        var dati = __ADVENTURE_DATA__;
+        document.title = (dati && dati.meta && dati.meta.titolo) || 'Avventura';
+        avviaGioco(dati);
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
   </script>
 </body>
 </html>
