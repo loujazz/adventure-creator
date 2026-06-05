@@ -57,13 +57,23 @@ function caricaLocalStorage() {
 
 function salvaLocalStorage() {
   const id = getAdventureId();
-  localStorage.setItem('adventure_' + id, JSON.stringify(avventura));
+  try {
+    localStorage.setItem('adventure_' + id, JSON.stringify(avventura));
+  } catch (e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      toast('⚠ Spazio esaurito: le immagini sono troppo grandi per il browser. Usa immagini più piccole (< 500 KB).');
+    } else {
+      toast('Errore nel salvataggio: ' + e.message);
+    }
+    return false;
+  }
   // aggiorna metadati nell'index
   let index = JSON.parse(localStorage.getItem('adventures_index') || '[]');
   const i = index.findIndex(a => a.id === id);
   const meta = { id, titolo: avventura.meta?.titolo || 'Senza titolo', autore: avventura.meta?.autore || '', aggiornatoIl: new Date().toISOString() };
   if (i >= 0) index[i] = meta; else index.push(meta);
   localStorage.setItem('adventures_index', JSON.stringify(index));
+  return true;
 }
 
 // ─── Navigazione sezioni ─────────────────────────────────────
@@ -238,10 +248,11 @@ function salvaSzanza() {
 
   if (idVecchio && idVecchio !== idNuovo) delete avventura.stanze[idVecchio];
   avventura.stanze[idNuovo] = stanza;
-  salvaLocalStorage();
-  chiudiModali();
-  renderStanze();
-  toast('Stanza salvata');
+  if (salvaLocalStorage()) {
+    chiudiModali();
+    renderStanze();
+    toast('Stanza salvata');
+  }
 }
 
 function eliminaStanza() {
@@ -876,14 +887,14 @@ async function apriAnteprima() {
     toast('Configura almeno una stanza e imposta la stanza iniziale prima di vedere l\'anteprima.');
     return;
   }
+  // Apri la finestra PRIMA dell'await, altrimenti il popup blocker la blocca
+  const finestra = window.open('', '_blank');
+  if (!finestra) { toast('Popup bloccato — consenti i popup per questa pagina'); return; }
   const html = await generaHtmlGioco();
-  if (!html) return;
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const finestra = window.open(url, '_blank');
-  // Revoca l'URL dopo che la finestra ha caricato
-  if (finestra) finestra.addEventListener('load', () => URL.revokeObjectURL(url));
-  else URL.revokeObjectURL(url);
+  if (!html) { finestra.close(); return; }
+  finestra.document.open();
+  finestra.document.write(html);
+  finestra.document.close();
   toast('Anteprima aperta in una nuova scheda');
 }
 
@@ -927,14 +938,23 @@ function bindUploadImmagine() {
 }
 
 function leggiImmagine(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const src = e.target.result;
+  const img = new Image();
+  const objectUrl = URL.createObjectURL(file);
+  img.onload = () => {
+    URL.revokeObjectURL(objectUrl);
+    // Ridimensiona a max 1280px di larghezza e comprimi a JPEG qualità 0.75
+    const MAX_W = 1280;
+    const scale = img.width > MAX_W ? MAX_W / img.width : 1;
+    const canvas = document.createElement('canvas');
+    canvas.width  = Math.round(img.width  * scale);
+    canvas.height = Math.round(img.height * scale);
+    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+    const src = canvas.toDataURL('image/jpeg', 0.75);
     document.getElementById('stanza-immagine-data').value = src;
     aggiornaPreviewImmagine(src);
     document.getElementById('img-upload-label').textContent = file.name;
   };
-  reader.readAsDataURL(file);
+  img.src = objectUrl;
 }
 
 // ─── Init & binding eventi ────────────────────────────────────
