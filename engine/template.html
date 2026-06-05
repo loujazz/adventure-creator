@@ -271,14 +271,21 @@
       white-space: pre-wrap;
     }
 
-    #schermata-benvenuto .invito {
+    #btn-inizia {
+      background: transparent;
+      border: 2px solid var(--ambra);
       color: var(--ambra);
+      font-family: 'VT323', 'Courier New', monospace;
       font-size: 22px;
       letter-spacing: 2px;
+      padding: 10px 28px;
+      cursor: pointer;
+      transition: background .2s, color .2s;
     }
+    #btn-inizia:hover { background: var(--ambra); color: #000; }
 
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    #schermata-benvenuto .invito { animation: blink 1.2s step-end infinite; }
+    #btn-inizia { animation: blink 1.2s step-end infinite; }
     #prompt { animation: blink 1s step-end infinite; }
   </style>
 </head>
@@ -289,7 +296,7 @@
     <div class="titolo-benvenuto" id="benv-titolo">ADVENTURE</div>
     <div class="autore-benvenuto" id="benv-autore"></div>
     <div class="testo-intro" id="benv-intro"></div>
-    <div class="invito">▶ PREMI INVIO PER INIZIARE ◀</div>
+    <button id="btn-inizia">▶ PREMI INVIO O CLICCA PER INIZIARE ◀</button>
   </div>
 
   <!-- Gioco vero e proprio -->
@@ -318,7 +325,7 @@
     <div id="zona-input">
       <form id="form-input" autocomplete="off">
         <span id="prompt">&gt;</span>
-        <input type="text" id="input" placeholder="scrivi un comando..." autofocus>
+        <input type="text" id="input" placeholder="scrivi un comando...">
       </form>
     </div>
 

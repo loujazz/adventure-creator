@@ -836,12 +836,9 @@ function importaJSON(file) {
 
 // ─── Export gioco ─────────────────────────────────────────────
 
-async function esportaGioco() {
-  leggiImpostazioni();
-
+async function generaHtmlGioco() {
   let engineJs = '';
   let templateHtml = '';
-
   try {
     const [resEngine, resTemplate] = await Promise.all([
       fetch('../engine/engine.js'),
@@ -851,14 +848,18 @@ async function esportaGioco() {
     templateHtml = await resTemplate.text();
   } catch (e) {
     toast('Errore caricamento engine/template');
-    return;
+    return null;
   }
-
   const jsonAvventura = JSON.stringify(avventura);
-  let html = templateHtml
+  return templateHtml
     .replace('/*__ADVENTURE_JSON__*/', jsonAvventura)
     .replace('/*__ENGINE_JS__*/', engineJs);
+}
 
+async function esportaGioco() {
+  leggiImpostazioni();
+  const html = await generaHtmlGioco();
+  if (!html) return;
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -867,6 +868,23 @@ async function esportaGioco() {
   a.click();
   URL.revokeObjectURL(url);
   toast('Gioco esportato!');
+}
+
+async function apriAnteprima() {
+  leggiImpostazioni();
+  if (!avventura.meta.stanza_iniziale || !Object.keys(avventura.stanze).length) {
+    toast('Configura almeno una stanza e imposta la stanza iniziale prima di vedere l\'anteprima.');
+    return;
+  }
+  const html = await generaHtmlGioco();
+  if (!html) return;
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const finestra = window.open(url, '_blank');
+  // Revoca l'URL dopo che la finestra ha caricato
+  if (finestra) finestra.addEventListener('load', () => URL.revokeObjectURL(url));
+  else URL.revokeObjectURL(url);
+  toast('Anteprima aperta in una nuova scheda');
 }
 
 // ─── Upload immagine stanza ───────────────────────────────────
@@ -992,6 +1010,7 @@ function init() {
   document.getElementById('file-import').addEventListener('change', (e) => {
     if (e.target.files[0]) importaJSON(e.target.files[0]);
   });
+  document.getElementById('btn-anteprima').addEventListener('click', apriAnteprima);
   document.getElementById('btn-export-game').addEventListener('click', esportaGioco);
 
   // Chiudi modali

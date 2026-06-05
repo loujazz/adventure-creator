@@ -487,23 +487,28 @@
 
   function mostraSchermataIntro(meta, onAvvia) {
     const schermata = document.getElementById('schermata-benvenuto');
-    const gioco = document.getElementById('gioco');
+    const gioco     = document.getElementById('gioco');
+    const btnInizio = document.getElementById('btn-inizia');
 
     document.getElementById('benv-titolo').textContent = meta.titolo || 'AVVENTURA';
     document.getElementById('benv-autore').textContent = meta.autore ? '— ' + meta.autore + ' —' : '';
-    document.getElementById('benv-intro').textContent = meta.intro || '';
+    document.getElementById('benv-intro').textContent  = meta.intro || '';
 
-    // Avvia al primo INVIO (o click)
+    let avviato = false;
     const avvia = (e) => {
-      if (e.type === 'keydown' && e.key !== 'Enter') return;
+      // Per keydown accetta solo Invio; click e submit passano sempre
+      if (e && e.type === 'keydown' && e.key !== 'Enter') return;
+      if (avviato) return;
+      avviato = true;
+      document.removeEventListener('keydown', avvia);
       schermata.style.display = 'none';
       gioco.style.display = 'flex';
-      document.removeEventListener('keydown', avvia);
-      schermata.removeEventListener('click', avvia);
       onAvvia();
     };
 
+    // Tre modi per iniziare: tasto Invio, clic sul pulsante, clic ovunque nella schermata
     document.addEventListener('keydown', avvia);
+    if (btnInizio) btnInizio.addEventListener('click', avvia);
     schermata.addEventListener('click', avvia);
   }
 
