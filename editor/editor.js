@@ -1034,7 +1034,16 @@ function init() {
 
   // Guida (pulsante o tasto F1)
   const modalGuida = document.getElementById('modal-guida');
-  document.getElementById('btn-guida').addEventListener('click', () => modalGuida.classList.remove('hidden'));
+  function apriGuida(ancora) {
+    modalGuida.classList.remove('hidden');
+    const el = ancora && modalGuida.querySelector('#' + ancora);
+    if (el) el.scrollIntoView({ block: 'start' }); else modalGuida.querySelector('.modal-body').scrollTop = 0;
+  }
+  document.getElementById('btn-guida').addEventListener('click', () => apriGuida());
+  // Pulsanti "?" contestuali: aprono la guida alla sezione giusta
+  document.querySelectorAll('.btn-help').forEach(b => {
+    b.addEventListener('click', (e) => { e.stopPropagation(); apriGuida(b.dataset.guida); });
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'F1') { e.preventDefault(); modalGuida.classList.toggle('hidden'); }
     if (e.key === 'Escape') modalGuida.classList.add('hidden');

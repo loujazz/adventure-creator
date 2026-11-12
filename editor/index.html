@@ -34,7 +34,7 @@
     <main id="main-panel">
       <!-- sezione impostazioni -->
       <section id="section-impostazioni" class="section active">
-        <h2>Impostazioni avventura</h2>
+        <h2>Impostazioni avventura <button type="button" class="btn-help" data-guida="g-impostazioni" title="Apri la guida su questa sezione">?</button></h2>
         <div class="form-grid">
           <label>Titolo
             <input type="text" id="meta-titolo" placeholder="Il mio gioco">
@@ -60,7 +60,7 @@
       <!-- sezione stanze -->
       <section id="section-stanze" class="section">
         <div class="section-header">
-          <h2>Stanze</h2>
+          <h2>Stanze <button type="button" class="btn-help" data-guida="g-stanze" title="Apri la guida su questa sezione">?</button></h2>
           <button id="btn-nuova-stanza" class="btn-primary">+ Nuova stanza</button>
         </div>
         <div id="stanze-container" class="cards-grid"></div>
@@ -69,7 +69,7 @@
       <!-- sezione oggetti -->
       <section id="section-oggetti" class="section">
         <div class="section-header">
-          <h2>Oggetti</h2>
+          <h2>Oggetti <button type="button" class="btn-help" data-guida="g-oggetti" title="Apri la guida su questa sezione">?</button></h2>
           <button id="btn-nuovo-oggetto" class="btn-primary">+ Nuovo oggetto</button>
         </div>
         <div id="oggetti-container" class="cards-grid"></div>
@@ -78,7 +78,7 @@
       <!-- sezione personaggi -->
       <section id="section-personaggi" class="section">
         <div class="section-header">
-          <h2>Personaggi</h2>
+          <h2>Personaggi <button type="button" class="btn-help" data-guida="g-personaggi" title="Apri la guida su questa sezione">?</button></h2>
           <button id="btn-nuovo-personaggio" class="btn-primary">+ Nuovo personaggio</button>
         </div>
         <div id="personaggi-container" class="cards-grid"></div>
@@ -87,7 +87,7 @@
       <!-- sezione azioni globali -->
       <section id="section-azioni" class="section">
         <div class="section-header">
-          <h2>Azioni globali</h2>
+          <h2>Azioni globali <button type="button" class="btn-help" data-guida="g-azioni" title="Apri la guida su questa sezione">?</button></h2>
           <p class="section-desc">Queste azioni sono valide in qualsiasi stanza.</p>
           <button id="btn-nuova-azione-globale" class="btn-primary">+ Nuova azione</button>
         </div>
@@ -97,7 +97,7 @@
       <!-- sezione flags -->
       <section id="section-flags" class="section">
         <div class="section-header">
-          <h2>Flags</h2>
+          <h2>Flags <button type="button" class="btn-help" data-guida="g-flags" title="Apri la guida su questa sezione">?</button></h2>
           <p class="section-desc">Variabili booleane o numeriche usate nelle condizioni.</p>
           <button id="btn-nuovo-flag" class="btn-primary">+ Nuovo flag</button>
         </div>
@@ -236,7 +236,7 @@
     <div class="modal-backdrop"></div>
     <div class="modal-content modal-large">
       <div class="modal-header">
-        <h3>Configura azione</h3>
+        <h3>Configura azione <button type="button" class="btn-help" data-guida="g-azioni" title="Apri la guida su questa sezione">?</button></h3>
         <button class="modal-close">✕</button>
       </div>
       <div class="modal-body">
