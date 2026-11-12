@@ -22,6 +22,7 @@
         <button class="nav-btn" data-section="flags">🚩 Flags</button>
       </nav>
       <div class="sidebar-footer">
+        <button id="btn-guida" class="btn-secondary" title="Apri la guida (F1)">📖 Guida (F1)</button>
         <button id="btn-import-json" class="btn-secondary">📂 Importa JSON</button>
         <button id="btn-export-json" class="btn-secondary">💾 Salva JSON</button>
         <button id="btn-anteprima" class="btn-secondary">👁 Anteprima</button>
@@ -295,6 +296,107 @@
       </div>
       <div class="modal-body">
         <div id="seleziona-lista" class="select-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guida -->
+  <div id="modal-guida" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-large guida">
+      <div class="modal-header">
+        <h3>📖 Guida alla creazione</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <nav class="guida-indice">
+          <a href="#g-iniziare">Come iniziare</a>
+          <a href="#g-impostazioni">Impostazioni</a>
+          <a href="#g-stanze">Stanze</a>
+          <a href="#g-oggetti">Oggetti</a>
+          <a href="#g-personaggi">Personaggi</a>
+          <a href="#g-azioni">Azioni</a>
+          <a href="#g-flags">Flags</a>
+          <a href="#g-comandi">Comandi dello studente</a>
+          <a href="#g-salvataggio">Salvare e pubblicare</a>
+          <a href="#g-consigli">Consigli</a>
+        </nav>
+
+        <h4 id="g-iniziare">Come iniziare</h4>
+        <p>Ordine consigliato: <b>1)</b> Impostazioni → <b>2)</b> Oggetti e Personaggi → <b>3)</b> Stanze → <b>4)</b> Azioni → <b>5)</b> Anteprima. Crea prima gli oggetti e i personaggi, così potrai inserirli nelle stanze.</p>
+
+        <h4 id="g-impostazioni">⚙ Impostazioni</h4>
+        <ul>
+          <li><b>Titolo / Autore</b>: mostrati nella schermata di benvenuto.</li>
+          <li><b>Stanza iniziale</b>: dove parte lo studente. <i>Obbligatoria</i>: senza non si può avviare il gioco.</li>
+          <li><b>Testo introduttivo</b>: spiega allo studente dove si trova, cosa succede e qual è l'obiettivo.</li>
+          <li><b>Testo vittoria / sconfitta</b>: mostrati quando un'azione ha l'effetto Vittoria o Sconfitta.</li>
+        </ul>
+
+        <h4 id="g-stanze">🏠 Stanze</h4>
+        <ul>
+          <li><b>ID</b>: nome tecnico univoco, senza spazi (es. <code>ingresso</code>). Se lo cambi, ricollega le uscite.</li>
+          <li><b>Descrizione</b>: testo alla prima visita. <b>Descrizione ritorno</b> (facoltativa): testo alle visite successive.</li>
+          <li><b>Immagine</b>: formato widescreen (es. 1280×400). Viene ridimensionata e compressa automaticamente per stare nel browser.</li>
+          <li><b>Uscite</b>: scegli la stanza di destinazione per Nord, Sud, Est, Ovest. Ricorda di creare anche il percorso di ritorno.</li>
+          <li><b>Oggetti / Personaggi presenti</b>: con il pulsante <b>+</b> scegli dal catalogo.</li>
+          <li><b>Azioni locali</b>: valide solo in quella stanza.</li>
+        </ul>
+
+        <h4 id="g-oggetti">🎒 Oggetti</h4>
+        <ul>
+          <li><b>Sinonimi</b>: altri nomi che lo studente può usare, separati da virgola (es. <code>chiave, chiavetta</code>).</li>
+          <li><b>Descrizione</b>: risposta a <code>ESAMINA oggetto</code>.</li>
+          <li><b>Raccoglibile</b>: lo studente può prenderlo con PRENDI.</li>
+          <li><b>Visibile</b>: se disattivato, non compare nell'elenco "Qui vedi" della stanza.</li>
+        </ul>
+
+        <h4 id="g-personaggi">👤 Personaggi</h4>
+        <ul>
+          <li><b>Descrizione</b>: risposta a ESAMINA. <b>Dialogo default</b>: risposta a <code>PARLA CON personaggio</code>.</li>
+          <li>Per dialoghi che cambiano (es. dopo aver ottenuto un oggetto) crea un'<b>azione</b> con verbo PARLA e delle condizioni.</li>
+        </ul>
+
+        <h4 id="g-azioni">⚡ Azioni</h4>
+        <p>Ogni azione è una regola <b>SE → ALLORA</b>:</p>
+        <ul>
+          <li><b>Comando</b>: verbo + target (es. APRI porta) e sinonimi del target.</li>
+          <li><b>Condizioni</b> (tutte devono essere vere): hai/non hai un oggetto, un flag è vero/falso, prima visita, numero visite ≥ N.</li>
+          <li><b>Effetti</b> (eseguiti in ordine): mostra testo, aggiungi/rimuovi oggetto, attiva/disattiva flag, sblocca uscita, vai a stanza, vittoria, sconfitta.</li>
+          <li><b>Priorità</b>: se più azioni corrispondono, vince quella con priorità più alta le cui condizioni sono soddisfatte. Metti alta priorità al caso speciale (es. "porta aperta con la chiave") e bassa a quello generico ("la porta è chiusa").</li>
+          <li><b>Azioni globali</b> valgono in tutte le stanze; quelle <b>locali</b> solo nella stanza in cui sono create.</li>
+        </ul>
+
+        <h4 id="g-flags">🚩 Flags</h4>
+        <p>Interruttori che ricordano cosa è successo (es. <code>porta_aperta</code>). Definisci qui il valore iniziale, poi attivali/disattivali con gli effetti delle azioni e controllali nelle condizioni.</p>
+
+        <h4 id="g-comandi">Comandi dello studente</h4>
+        <ul>
+          <li><code>N / S / E / O</code> o <code>VAI NORD</code> — spostarsi</li>
+          <li><code>ESAMINA / GUARDA [cosa]</code> — descrizione (senza target: rilegge la stanza)</li>
+          <li><code>PRENDI [oggetto]</code> / <code>LASCIA [oggetto]</code></li>
+          <li><code>PARLA CON [personaggio]</code></li>
+          <li><code>INVENTARIO</code> (o <code>INV</code>) — oggetti posseduti</li>
+          <li><code>AIUTO</code> — elenco comandi</li>
+          <li>Qualsiasi altro verbo (APRI, USA, DAI…) funziona solo se hai creato un'azione per esso.</li>
+        </ul>
+
+        <h4 id="g-salvataggio">Salvare, provare e pubblicare</h4>
+        <ul>
+          <li>Il lavoro si salva <b>automaticamente nel browser</b> (localStorage) a ogni modifica salvata. Cambiando browser o computer non lo ritrovi.</li>
+          <li><b>💾 Salva JSON</b>: scarica un backup. <b>📂 Importa JSON</b>: lo ricarica. Fai il backup regolarmente.</li>
+          <li><b>👁 Anteprima</b>: prova il gioco in una nuova scheda (consenti i popup). Richiede almeno una stanza e la stanza iniziale.</li>
+          <li><b>🎮 Esporta gioco</b>: scarica un unico file HTML da dare agli studenti o pubblicare (Netlify, Vercel, GitHub Pages).</li>
+        </ul>
+
+        <h4 id="g-consigli">Consigli</h4>
+        <ul>
+          <li>Disegna prima una mappa su carta: stanze, collegamenti, oggetti chiave.</li>
+          <li>Usa ID brevi e senza accenti o spazi.</li>
+          <li>Inserisci sinonimi per i target: gli studenti scrivono in modi diversi.</li>
+          <li>Prova sempre l'avventura in Anteprima prima di condividerla, tentando anche comandi sbagliati.</li>
+          <li>Immagini molto pesanti riempiono la memoria del browser: meglio poche immagini ben scelte.</li>
+        </ul>
       </div>
     </div>
   </div>

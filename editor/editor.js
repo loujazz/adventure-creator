@@ -1031,6 +1031,21 @@ function init() {
     if (e.target.files[0]) importaJSON(e.target.files[0]);
   });
   document.getElementById('btn-anteprima').addEventListener('click', apriAnteprima);
+
+  // Guida (pulsante o tasto F1)
+  const modalGuida = document.getElementById('modal-guida');
+  document.getElementById('btn-guida').addEventListener('click', () => modalGuida.classList.remove('hidden'));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'F1') { e.preventDefault(); modalGuida.classList.toggle('hidden'); }
+    if (e.key === 'Escape') modalGuida.classList.add('hidden');
+  });
+  // Link dell'indice: scorri dentro il modale senza cambiare URL
+  modalGuida.querySelectorAll('.guida-indice a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      modalGuida.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
   document.getElementById('btn-export-game').addEventListener('click', esportaGioco);
 
   // Chiudi modali

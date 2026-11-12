@@ -531,3 +531,15 @@ textarea { resize: vertical; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ─── Guida ──────────────────────────────────────────────── */
+
+.guida .modal-body { line-height: 1.55; font-size: 13.5px; }
+.guida .modal-body p, .guida .modal-body ul { margin-bottom: 8px; }
+.guida .modal-body ul { padding-left: 20px; }
+.guida .modal-body li { margin-bottom: 4px; }
+.guida code { background: #ede9fe; color: var(--primary); padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+.guida h4 { color: var(--primary); }
+.guida-indice { display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.guida-indice a { background: var(--secondary-bg); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; font-size: 12px; color: var(--text); text-decoration: none; }
+.guida-indice a:hover { background: #ede9fe; color: var(--primary); }
